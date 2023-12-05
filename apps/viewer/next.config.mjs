@@ -44,6 +44,13 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
   },
+  webpack: (config, { isServer, nextRuntime }) => {
+    if (isServer && nextRuntime !== 'edge') return config
+    // These packages are imports from the integrations definition files that can be ignored for the client.
+    config.resolve.alias['minio'] = false
+    config.resolve.alias['got'] = false
+    return config
+  },
   async redirects() {
     return [
       {
